@@ -4,7 +4,7 @@ import ProductListItem from "@/src/components/ProductListItem";
 
 export default function MenuScreen() {
 	return (
-		<View>
+		<View style={styles.container}>
 			{products.map((product, index) => (
 				<ProductListItem key={index} product={product} />
 			))}
