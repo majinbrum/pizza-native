@@ -1,21 +1,7 @@
-import { StyleSheet, View } from "react-native";
+import { FlatList } from "react-native";
 import products from "@/assets/data/products";
 import ProductListItem from "@/src/components/ProductListItem";
 
 export default function MenuScreen() {
-	return (
-		<View style={styles.container}>
-			{products.map((product, index) => (
-				<ProductListItem key={index} product={product} />
-			))}
-		</View>
-	);
+	return <FlatList data={products} renderItem={({ item }) => <ProductListItem product={item} />} numColumns={2} contentContainerStyle={{ gap: 10, padding: 10 }} columnWrapperStyle={{ gap: 10 }} />;
 }
-
-const styles = StyleSheet.create({
-	container: {
-		backgroundColor: "white",
-		padding: 10,
-		borderRadius: 20,
-	},
-});
