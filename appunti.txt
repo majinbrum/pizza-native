@@ -13,3 +13,10 @@ rm -rf node_modules
 rm package-lock.json
 npm install
 npm start -- --reset-cache
+
+
+//========================//
+se voglio aggiungere qualcosa a un commit che ho appena fatto
+git add .
+git commit --amend --no-edit
+no edit per mantenere lo stesso messaggio del commit
