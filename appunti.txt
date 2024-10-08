@@ -1,0 +1,8 @@
+npx create-expo-app@latest pizza-native -t
+
+npm start (creates also expo folder)
+
+if ts conflict:
+ctrl+shift+p Typescript: Restart ts server
+
+https://stackoverflow.com/questions/61785783/dependencies-are-not-compatible-with-currently-expo-package-version-when-running
