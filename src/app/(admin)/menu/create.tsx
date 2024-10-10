@@ -2,15 +2,20 @@ import Button from "@/src/components/Button";
 import { defaultPizzaImage } from "@/src/components/ProductListItem";
 import Colors from "@/src/constants/Colors";
 import { useState } from "react";
-import { View, Text, StyleSheet, TextInput, Image } from "react-native";
+import { View, Text, StyleSheet, TextInput, Image, Platform, Alert, Modal, Pressable } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { Stack } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 
 const CreateProductScreen = () => {
 	const [name, setName] = useState("");
 	const [price, setPrice] = useState("");
 	const [errors, setErrors] = useState("");
 	const [image, setImage] = useState<string | null>(null);
+	const [modalVisible, setModalVisible] = useState(false);
+
+	const { id } = useLocalSearchParams();
+	// doppio !! significa se è defined (contrario di ! che significa che è undefined o che non è defined)
+	const isUpdating = !!id;
 
 	const validateInput = () => {
 		setErrors("");
@@ -35,12 +40,32 @@ const CreateProductScreen = () => {
 		setImage(null);
 	};
 
+	const onSubmit = () => {
+		if (isUpdating) {
+			onUpdate();
+		} else {
+			onCreate();
+		}
+	};
+
 	const onCreate = () => {
 		if (!validateInput()) {
 			return;
 		}
 
 		console.warn("Creating product", name, price);
+
+		// Save in the database
+
+		resetFields();
+	};
+
+	const onUpdate = () => {
+		if (!validateInput()) {
+			return;
+		}
+
+		console.warn("Updating product", name, price);
 
 		// Save in the database
 
@@ -61,9 +86,38 @@ const CreateProductScreen = () => {
 		}
 	};
 
+	const onDelete = () => {
+		console.warn("DELETE");
+	};
+
+	const confirmDelete = () => {
+		if (Platform.OS === "ios") {
+			Alert.alert(
+				"Confirm",
+				"Are you sure you want to delete this product?",
+				[
+					{
+						text: "Cancel",
+						style: "cancel",
+					},
+					{
+						text: "Delete",
+						style: "destructive",
+						onPress: onDelete,
+					},
+				],
+				{ cancelable: true } // Android specific to allow dismissing the alert by tapping outside
+			);
+		}
+		if (Platform.OS === "android") {
+			setModalVisible(false);
+			onDelete();
+		}
+	};
+
 	return (
 		<View style={styles.container}>
-			<Stack.Screen options={{ title: "Create Product " }} />
+			<Stack.Screen options={{ title: isUpdating ? "Update Product" : "Create Product " }} />
 
 			<Image source={{ uri: image || defaultPizzaImage }} style={styles.image} />
 			<Text style={styles.textBtn} onPress={pickImage}>
@@ -77,7 +131,43 @@ const CreateProductScreen = () => {
 			<TextInput value={price} onChangeText={setPrice} placeholder='9.99' style={styles.input} keyboardType='numeric' />
 
 			<Text style={{ color: "red" }}>{errors}</Text>
-			<Button text='Create' onPress={onCreate} />
+			<Button text={isUpdating ? "Update" : "Create"} onPress={onSubmit} />
+			{isUpdating && Platform.OS === "ios" && (
+				<Text style={styles.textBtn} onPress={confirmDelete}>
+					Delete
+				</Text>
+			)}
+			{isUpdating && Platform.OS === "android" && (
+				<>
+					<Modal
+						animationType='none'
+						transparent={true}
+						visible={modalVisible}
+						onRequestClose={() => {
+							Alert.alert("Modal has been closed.");
+							setModalVisible(!modalVisible);
+						}}>
+						<View style={styles.centeredView}>
+							<View style={styles.modalView}>
+								<Text style={styles.modalTitle}>Confirm</Text>
+								<Text style={styles.modalText}>Are you sure you want to delete this product?</Text>
+
+								<View style={styles.modalButtons}>
+									<Text style={[styles.textBtn, styles.modalCancel]} onPress={() => setModalVisible(false)}>
+										Cancel
+									</Text>
+									<Text style={[styles.textBtn, styles.modalConfirm]} onPress={confirmDelete}>
+										Confirm
+									</Text>
+								</View>
+							</View>
+						</View>
+					</Modal>
+					<Text style={styles.textBtn} onPress={() => setModalVisible(true)}>
+						Delete
+					</Text>
+				</>
+			)}
 		</View>
 	);
 };
@@ -90,7 +180,7 @@ const styles = StyleSheet.create({
 	},
 	label: {
 		color: "gray",
-		fontSize: 16,
+		fontSize: 18,
 	},
 	input: {
 		backgroundColor: "white",
@@ -105,10 +195,62 @@ const styles = StyleSheet.create({
 		alignSelf: "center",
 	},
 	textBtn: {
+		fontSize: 18,
 		alignSelf: "center",
 		fontWeight: "bold",
 		color: Colors.light.tint,
 		marginVertical: 10,
+	},
+	// modal
+	centeredView: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		marginTop: 22,
+	},
+	modalView: {
+		margin: 20,
+		backgroundColor: "white",
+		borderRadius: 20,
+		padding: 35,
+		alignItems: "center",
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 2,
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 4,
+		elevation: 5,
+	},
+	modalTitle: {
+		marginBottom: 15,
+		textAlign: "center",
+		fontWeight: "bold",
+		fontSize: 18,
+	},
+	modalText: {
+		marginBottom: 15,
+		textAlign: "center",
+		fontSize: 16,
+	},
+	modalButtons: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+	},
+	modalCancel: {
+		flex: 1,
+		fontWeight: "regular",
+		color: "gray",
+		textAlign: "center",
+		fontSize: 16,
+	},
+	modalConfirm: {
+		flex: 1,
+		fontWeight: "bold",
+		color: "red",
+		textAlign: "center",
+		fontSize: 16,
 	},
 });
 

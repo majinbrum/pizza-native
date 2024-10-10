@@ -1,4 +1,4 @@
-import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { View, Text, Image, StyleSheet, Pressable } from "react-native";
 import products from "@/assets/data/products";
 import { defaultPizzaImage } from "@/src/components/ProductListItem";
@@ -6,6 +6,8 @@ import { useState } from "react";
 import Button from "@/src/components/Button";
 import { useCart } from "@/src/providers/CartProvider";
 import { PizzaSize } from "@/src/types";
+import FontAwesome from "@expo/vector-icons/FontAwesome6";
+import Colors from "@/src/constants/Colors";
 
 const sizes: PizzaSize[] = ["S", "M", "L", "XL"];
 
@@ -30,6 +32,17 @@ const ProductDetailsScreen = () => {
 
 	return (
 		<View style={styles.container}>
+			<Stack.Screen
+				options={{
+					title: "Menu",
+					headerRight: () => (
+						<Link href={`/(admin)/menu/create?id=${id}`} asChild>
+							<Pressable>{({ pressed }) => <FontAwesome name='pen-to-square' size={20} color={Colors.light.tint} style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }} />}</Pressable>
+						</Link>
+					),
+				}}
+			/>
+
 			{/* secondo metodo per cambiare titolo dello screen. da qui è più comodo perché si possono usare anche le props */}
 			<Stack.Screen options={{ title: product.name }} />
 
