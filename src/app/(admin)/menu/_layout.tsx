@@ -12,7 +12,7 @@ export default function MenuStack() {
 				options={{
 					title: "Menu",
 					headerRight: () => (
-						<Link href='/' asChild>
+						<Link href='/(admin)/menu/create' asChild>
 							<Pressable>{({ pressed }) => <FontAwesome name='circle-plus' size={20} color={Colors.light.tint} style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }} />}</Pressable>
 						</Link>
 					),
