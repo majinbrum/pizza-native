@@ -1,3 +1,5 @@
+https://www.youtube.com/watch?v=rIYzLhkG9TA
+
 npx create-expo-app@latest pizza-native -t
 
 npm start (creates also expo folder)
