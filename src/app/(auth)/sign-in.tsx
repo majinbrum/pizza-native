@@ -1,13 +1,19 @@
 import Button from "@/src/components/Button";
 import Colors from "@/src/constants/Colors";
-import { Link, Stack } from "expo-router";
+import { supabase } from "@/src/lib/supabase";
+import { useAuth } from "@/src/providers/AuthProvider";
+import { Link, Redirect, router, Stack } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, View, Text, TextInput } from "react-native";
+import { StyleSheet, View, Text, TextInput, Alert } from "react-native";
 
 const SignInScreen = () => {
+	const { session } = useAuth();
+
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [errors, setErrors] = useState("");
+
+	const [loading, setLoading] = useState(false);
 
 	const validateInput = () => {
 		setErrors("");
@@ -22,10 +28,21 @@ const SignInScreen = () => {
 		return true;
 	};
 
-	const signIn = () => {
+	async function signInWithEmail() {
 		validateInput();
-		console.warn("Sign in");
-	};
+		setLoading(true);
+		const { error } = await supabase.auth.signInWithPassword({
+			email: email,
+			password: password,
+		});
+
+		setLoading(false);
+		if (error) Alert.alert(error.message);
+	}
+
+	if (session) {
+		return <Redirect href={"/"} />;
+	}
 
 	return (
 		<View style={styles.container}>
@@ -36,14 +53,32 @@ const SignInScreen = () => {
 			/>
 
 			<Text style={styles.label}>Email</Text>
-			<TextInput value={email} onChangeText={setEmail} placeholder='Email' style={styles.input} keyboardType='email-address' />
+			<TextInput
+				value={email}
+				onChangeText={setEmail}
+				placeholder='Email'
+				style={styles.input}
+				keyboardType='email-address'
+			/>
 
 			<Text style={styles.label}>Password</Text>
-			<TextInput value={password} onChangeText={setPassword} placeholder='Password' style={styles.input} secureTextEntry />
+			<TextInput
+				value={password}
+				onChangeText={setPassword}
+				placeholder='Password'
+				style={styles.input}
+				secureTextEntry
+			/>
 			<Text style={{ color: "red" }}>{errors}</Text>
 
-			<Button text='Sign in' onPress={signIn} />
-			<Link href={"/sign-up"} style={styles.textBtn}>
+			<Button
+				onPress={signInWithEmail}
+				disabled={loading}
+				text={loading ? "Signing in..." : "Sign in"}
+			/>
+			<Link
+				href={"/sign-up"}
+				style={styles.textBtn}>
 				Create an account
 			</Link>
 		</View>
