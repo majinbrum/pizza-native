@@ -6,6 +6,7 @@ import Link from "expo-router";
 import { defaultPizzaImage } from "./ProductListItem";
 import { FontAwesome } from "@expo/vector-icons";
 import { useCart } from "../providers/CartProvider";
+import RemoteImage from "./RemoteImage";
 
 type CartListItemProps = {
 	cartItem: CartItem;
@@ -16,7 +17,14 @@ const CartListItem = ({ cartItem }: CartListItemProps) => {
 
 	return (
 		<View style={styles.container}>
-			<Image source={{ uri: cartItem.product.image || defaultPizzaImage }} style={styles.image} resizeMode='contain' />
+			<RemoteImage
+				// <Image
+				// source={{ uri: cartItem.product.image || defaultPizzaImage }}
+				path={cartItem.product.image}
+				fallback={defaultPizzaImage}
+				style={styles.image}
+				resizeMode='contain'
+			/>
 			<View style={{ flex: 1 }}>
 				<Text style={styles.title}>{cartItem.product.name}</Text>
 				<View style={styles.subtitleContainer}>
@@ -25,10 +33,20 @@ const CartListItem = ({ cartItem }: CartListItemProps) => {
 				</View>
 			</View>
 			<View style={styles.quantitySelector}>
-				<FontAwesome onPress={() => updateQuantity(cartItem.id, -1)} name='minus' color='gray' style={{ padding: 5 }} />
+				<FontAwesome
+					onPress={() => updateQuantity(cartItem.id, -1)}
+					name='minus'
+					color='gray'
+					style={{ padding: 5 }}
+				/>
 
 				<Text style={styles.quantity}>{cartItem.quantity}</Text>
-				<FontAwesome onPress={() => updateQuantity(cartItem.id, 1)} name='plus' color='gray' style={{ padding: 5 }} />
+				<FontAwesome
+					onPress={() => updateQuantity(cartItem.id, 1)}
+					name='plus'
+					color='gray'
+					style={{ padding: 5 }}
+				/>
 			</View>
 		</View>
 	);
