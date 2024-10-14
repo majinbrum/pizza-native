@@ -7,6 +7,7 @@ import Button from "@/src/components/Button";
 import { useCart } from "@/src/providers/CartProvider";
 import { PizzaSize } from "@/src/types";
 import { useProduct } from "@/src/api/products";
+import RemoteImage from "@/src/components/RemoteImage";
 
 const sizes: PizzaSize[] = ["S", "M", "L", "XL"];
 
@@ -43,8 +44,11 @@ const ProductDetailsScreen = () => {
 			{/* secondo metodo per cambiare titolo dello screen. da qui è più comodo perché si possono usare anche le props */}
 			<Stack.Screen options={{ title: product.name }} />
 
-			<Image
-				source={{ uri: product.image || defaultPizzaImage }}
+			<RemoteImage
+				// <Image
+				// source={{ uri: product.image || defaultPizzaImage }}
+				path={product?.image}
+				fallback={defaultPizzaImage}
 				style={styles.image}
 			/>
 

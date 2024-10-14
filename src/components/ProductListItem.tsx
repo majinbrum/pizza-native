@@ -2,6 +2,7 @@ import { StyleSheet, Text, Image, Pressable } from "react-native";
 import Colors from "@/src/constants/Colors";
 import { Tables } from "../types";
 import { Href, Link, useSegments } from "expo-router";
+import RemoteImage from "./RemoteImage";
 
 export const defaultPizzaImage = "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png";
 
@@ -19,8 +20,11 @@ const ProductListItem = ({ product }: ProductListItemProps) => {
 			href={path}
 			asChild>
 			<Pressable style={styles.container}>
-				<Image
-					source={{ uri: product.image || defaultPizzaImage }}
+				<RemoteImage
+					// <Image
+					// source={{ uri: product.image || defaultPizzaImage }}
+					path={product.image}
+					fallback={defaultPizzaImage}
 					style={styles.image}
 					resizeMode='contain'
 				/>
