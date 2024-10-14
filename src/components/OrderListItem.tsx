@@ -1,11 +1,12 @@
 import { StyleSheet, Text, View, Pressable } from "react-native";
-import { Order } from "../types";
+import { Tables } from "../types";
 import { Href, Link, useSegments } from "expo-router";
 
 export const defaultPizzaImage = "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png";
 
 type OrderListItemProps = {
-	order: Order;
+	// order: Order;
+	order: Tables<"orders">;
 };
 
 const OrderListItem = ({ order }: OrderListItemProps) => {
@@ -13,24 +14,10 @@ const OrderListItem = ({ order }: OrderListItemProps) => {
 	const path: Href = `/${segments[0]}/orders/${order.id}` as Href;
 
 	return (
-		<>
-			{segments[2] !== order.id.toString() ? (
-				<Link
-					href={path}
-					asChild>
-					<Pressable>
-						<View style={styles.container}>
-							<View>
-								<Text style={styles.title}>Order #{order.id}</Text>
-								<Text style={styles.createdAt}>${order.created_at}</Text>
-							</View>
-							<View>
-								<Text style={styles.status}>{order.status}</Text>
-							</View>
-						</View>
-					</Pressable>
-				</Link>
-			) : (
+		<Link
+			href={path}
+			asChild>
+			<Pressable>
 				<View style={styles.container}>
 					<View>
 						<Text style={styles.title}>Order #{order.id}</Text>
@@ -40,8 +27,8 @@ const OrderListItem = ({ order }: OrderListItemProps) => {
 						<Text style={styles.status}>{order.status}</Text>
 					</View>
 				</View>
-			)}
-		</>
+			</Pressable>
+		</Link>
 	);
 };
 
