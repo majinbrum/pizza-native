@@ -19,10 +19,14 @@ function TabBarIcon(props: { name: React.ComponentProps<typeof FontAwesome>["nam
 }
 
 export default function TabLayout() {
+	console.log("(user)/_layout");
 	const colorScheme = useColorScheme();
 	const { session } = useAuth();
 
-	if (!session) return <Redirect href={"/"} />;
+	if (!session) {
+		console.log("redirect to sign-in from user layout");
+		return <Redirect href={"/sign-in"} />;
+	}
 
 	return (
 		<Tabs
@@ -57,6 +61,18 @@ export default function TabLayout() {
 					tabBarIcon: ({ color }) => (
 						<TabBarIcon
 							name='list-ul'
+							color={color}
+						/>
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name='profile'
+				options={{
+					title: "Profile",
+					tabBarIcon: ({ color }) => (
+						<TabBarIcon
+							name='circle-user'
 							color={color}
 						/>
 					),

@@ -1,37 +1,34 @@
-import { createContext, PropsWithChildren, useContext, useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import { Session } from "@supabase/supabase-js";
+import { PropsWithChildren, createContext, useContext, useEffect, useState } from "react";
+import { Tables } from "../types";
 
 type AuthData = {
 	session: Session | null;
-	profile: any;
+	profile: Tables<"profiles"> | null;
 	loading: boolean;
 	isAdmin: boolean;
 };
 
 const AuthContext = createContext<AuthData>({
 	session: null,
-	profile: null,
 	loading: true,
+	profile: null,
 	isAdmin: false,
 });
 
 export default function AuthProvider({ children }: PropsWithChildren) {
 	const [session, setSession] = useState<Session | null>(null);
-	const [profile, setProfile] = useState(null);
+	const [profile, setProfile] = useState<Tables<"profiles"> | null>(null);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		const fetchSession = async () => {
-			setLoading(true);
 			const {
 				data: { session },
 			} = await supabase.auth.getSession();
+
 			setSession(session);
-			// method 2
-			// supabase.auth.getSession().then(({ data: { session } }) => {
-			//     setSession(session);
-			// });
 
 			if (session) {
 				// fetch profile
@@ -48,7 +45,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
 		});
 	}, []);
 
-	return <AuthContext.Provider value={{ session, profile, loading, isAdmin: profile?.group === "ADMIN" }}>{children}</AuthContext.Provider>;
+	return <AuthContext.Provider value={{ session, loading, profile, isAdmin: profile?.group === "ADMIN" }}>{children}</AuthContext.Provider>;
 }
 
 export const useAuth = () => useContext(AuthContext);

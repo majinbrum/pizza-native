@@ -1,23 +1,23 @@
 import Button from "@/src/components/Button";
 import Colors from "@/src/constants/Colors";
-import { Link, Redirect, router, Stack } from "expo-router";
-import { useState } from "react";
-import { StyleSheet, View, Text, TextInput, Alert, AppState, ActivityIndicator } from "react-native";
+import { Link, Stack } from "expo-router";
+import React, { useState } from "react";
+import { StyleSheet, View, Text, TextInput, Alert, AppState } from "react-native";
 
 import { supabase } from "@/src/lib/supabase";
-import { useAuth } from "@/src/providers/AuthProvider";
+// import { useAuth } from "@/src/providers/AuthProvider";
 
 // Tells Supabase Auth to continuously refresh the session automatically if
 // the app is in the foreground. When this is added, you will continue to receive
 // `onAuthStateChange` events with the `TOKEN_REFRESHED` or `SIGNED_OUT` event
 // if the user's session is terminated. This should only be registered once.
-AppState.addEventListener("change", (state) => {
-	if (state === "active") {
-		supabase.auth.startAutoRefresh();
-	} else {
-		supabase.auth.stopAutoRefresh();
-	}
-});
+// AppState.addEventListener("change", (state) => {
+// 	if (state === "active") {
+// 		supabase.auth.startAutoRefresh();
+// 	} else {
+// 		supabase.auth.stopAutoRefresh();
+// 	}
+// });
 
 const SignUpScreen = () => {
 	const [email, setEmail] = useState("");
@@ -26,21 +26,11 @@ const SignUpScreen = () => {
 
 	async function signUpWithEmail() {
 		setLoading(true);
-		const {
-			data: { session },
-			error,
-		} = await supabase.auth.signUp({
-			email: email,
-			password: password,
-		});
+		const { error } = await supabase.auth.signUp({ email, password });
 
 		if (error) Alert.alert(error.message);
-		if (!session) Alert.alert("Something went wrong, please try again.");
-		if (session) router.push("/");
 		setLoading(false);
 	}
-
-	if (loading) return <ActivityIndicator />;
 
 	return (
 		<View style={styles.container}>

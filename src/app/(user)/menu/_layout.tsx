@@ -8,13 +8,27 @@ export default function MenuStack() {
 		<Stack
 			screenOptions={{
 				headerRight: () => (
-					<Link href='/cart' asChild>
-						<Pressable>{({ pressed }) => <FontAwesome name='cart-shopping' size={20} color={Colors.light.tint} style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }} />}</Pressable>
+					<Link
+						href='/cart'
+						asChild>
+						<Pressable>
+							{({ pressed }) => (
+								<FontAwesome
+									name='cart-shopping'
+									size={20}
+									color={Colors.light.tint}
+									style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+								/>
+							)}
+						</Pressable>
 					</Link>
 				),
 			}}>
 			{/* primo metodo per cambiare titolo dello screen*/}
-			<Stack.Screen name='index' options={{ title: "Menu" }} />
+			<Stack.Screen
+				name='index'
+				options={{ title: "Menu" }}
+			/>
 		</Stack>
 	);
 }
