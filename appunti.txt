@@ -22,3 +22,7 @@ se voglio aggiungere qualcosa a un commit che ho appena fatto
 git add .
 git commit --amend --no-edit
 no edit per mantenere lo stesso messaggio del commit
+
+
+//========================//
+soluzione al network error in local development: https://github.com/supabase/supabase-js/issues/879
